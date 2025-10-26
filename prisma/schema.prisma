@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  phone        String?
+  description  String   @default("") // ✅ default so seed/signup never fails
+  place        String   @default("") // ✅ default so seed/signup never fails
+  role         Role     @default(USER)
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  events   Event[]
+  messages Message[]
+  Blog     Blog[]
+}
+
+model Blog {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   @default("")
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  events    Event[] // one blog -> many events
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @default("")
+  startsAt    DateTime  @default(now())
+  endsAt      DateTime?
+  mediaUrl    String?
+  youtubeId   String?
+  published   Boolean   @default(true) // ✅ public by default
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
+  blogId String?
+  blog   Blog?   @relation(fields: [blogId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Message {
+  id        String  @id @default(cuid())
+  fromEmail String
+  fromName  String?
+  body      String
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}

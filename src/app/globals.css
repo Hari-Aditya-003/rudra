@@ -18,6 +18,16 @@
     --foreground: #ededed;
   }
 }
+/* src/app/globals.css */
+
+
+
+/* Custom utilities */
+@layer utilities {
+  .animate-spin-slow {
+    animation: spin 6s linear infinite;
+  }
+}
 
 body {
   background: var(--background);

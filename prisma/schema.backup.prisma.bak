@@ -1,0 +1,46 @@
+generator client { provider = "prisma-client-js" }
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  uid           String?  @unique
+  email         String?  @unique
+  name          String?
+  phone         String?
+  role          Role     @default(USER)
+  passwordHash  String?  // <- added
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  events        Event[]
+  messages      Message[]
+}
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  startsAt    DateTime @default(now())
+  endsAt      DateTime?
+  mediaUrl    String?
+  youtubeId   String?
+  published   Boolean  @default(false)
+  ownerId     String
+  owner       User     @relation(fields: [ownerId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  fromEmail String
+  fromName  String?
+  body      String
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+}
+
+enum Role { USER ADMIN }
