@@ -5,11 +5,9 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "images.pexels.com" }],
   },
-
-  // Skip ESLint & TS type errors during production builds
+  // Turn off build-time lint & TS errors
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-
   turbopack: { root: __dirname },
 };
 
