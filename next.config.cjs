@@ -1,20 +1,14 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  // ✅ Don’t fail the Vercel build because of lint/type issues
-  eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
-
-  // Keep your existing image rules
+module.exports = {
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.pexels.com" },
     ],
-    // If you’re mostly using <img>, avoid optimizer requirements
-    unoptimized: true,
   },
 
-  // Keep your turbopack root
+  // ✅ Skip ESLint & TypeScript errors during production builds
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+
   turbopack: { root: __dirname },
 };
-
-module.exports = nextConfig;
