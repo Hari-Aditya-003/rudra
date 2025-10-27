@@ -5,7 +5,7 @@
 export type EventInput = {
   title: string;
   description: string;
-  startsAt?: string; // ISO or yyyy-MM-ddTHH:mm
+  startsAt?: string; // ISO string (e.g. "2025-10-27T18:00")
   endsAt?: string | null;
   mediaUrl?: string | null;
   youtubeId?: string | null;
@@ -15,18 +15,29 @@ export type EventInput = {
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) {
     let msg = "Request failed";
-    try { const j = await res.json(); msg = j?.error ?? msg; } catch {}
+    try {
+      const j = await res.json();
+      msg = j?.error ?? msg;
+    } catch {
+      // Do nothing, fall back to default message
+    }
     throw new Error(msg);
   }
   return res.json();
 }
 
-export async function listEvents() {
+/**
+ * Get all events.
+ */
+export async function listEvents(): Promise<any[]> {
   const res = await fetch("/api/events", { cache: "no-store" });
   return json<any[]>(res);
 }
 
-export async function createEvent(data: EventInput) {
+/**
+ * Create a new event.
+ */
+export async function createEvent(data: EventInput): Promise<any> {
   const res = await fetch("/api/events", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -35,7 +46,10 @@ export async function createEvent(data: EventInput) {
   return json<any>(res);
 }
 
-export async function updateEvent(id: string, data: Partial<EventInput>) {
+/**
+ * Update an existing event by ID.
+ */
+export async function updateEvent(id: string, data: Partial<EventInput>): Promise<any> {
   const res = await fetch(`/api/events?id=${encodeURIComponent(id)}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
@@ -44,7 +58,10 @@ export async function updateEvent(id: string, data: Partial<EventInput>) {
   return json<any>(res);
 }
 
-export async function deleteEvent(id: string) {
+/**
+ * Delete an event by ID.
+ */
+export async function deleteEvent(id: string): Promise<{ ok: true }> {
   const res = await fetch(`/api/events?id=${encodeURIComponent(id)}`, {
     method: "DELETE",
   });

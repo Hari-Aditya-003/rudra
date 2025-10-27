@@ -10,13 +10,14 @@
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate",
-    "seed": "prisma db seed",
+    "db:seed": "tsx prisma/seed.ts",
     "make-admin": "tsx scripts/admin.ts make-admin",
     "check-admin": "tsx scripts/admin.ts check-admin",
     "set-password": "tsx scripts/admin.ts set-password",
     "list-admins": "tsx scripts/admin.ts list-admins",
     "update-profile": "tsx scripts/admin.ts update-profile",
-    "wipe-firebase-users": "tsx scripts/wipe-firebase-users.ts"
+    "wipe-firebase-users": "tsx scripts/wipe-firebase-users.ts",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@prisma/client": "^6.16.2",
@@ -45,9 +46,7 @@
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.5",
-    "typescript": "^5"
-  },
-  "prisma": {
-    "seed": "ts-node --esm prisma/seed.ts"
+    "typescript": "^5",
+    "husky": "^8.0.0"
   }
 }

@@ -11,13 +11,12 @@ import LanguageMenu from "@/components/LanguageMenu";
 type Me = { id: string; role: "USER" | "ADMIN" } | null;
 
 /* ── Brand (light) ───────────────────────────────────────────── */
-const NAVY = "#0D2348";                         // new blue for the top bar
-const STRIPE = "rgba(255,255,255,0.07)";        // subtle diagonal stripe
-const NAV_BG = "rgba(255,255,255,.78)";         // unchanged
+const NAVY = "#0D2348";
+const STRIPE = "rgba(255,255,255,0.07)";
+const NAV_BG = "rgba(255,255,255,.78)";
 const ACCENT = "#F97316";
 const ACCENT_HOVER = "#EA580C";
 
-/* Striped background just for the top bar */
 const TOPBAR_STYLE: React.CSSProperties = {
   backgroundColor: NAVY,
   backgroundImage: `
@@ -48,7 +47,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full">
-      {/* Top bar (was black → now blue with subtle stripes) */}
+      {/* Top bar */}
       <div style={TOPBAR_STYLE} className="text-white">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-1.5 text-xs sm:text-sm">
           <div className="flex items-center gap-4">
@@ -63,7 +62,6 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* pill uses the same blue so it blends in */}
             <LanguageMenu pillColor={NAVY} />
             {me ? (
               <div className="flex items-center gap-3">
@@ -85,34 +83,30 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main nav (glass) — unchanged */}
+      {/* Main nav */}
       <div
         className="border-b backdrop-blur supports-[backdrop-filter]:bg-white/70 shadow-[0_4px_16px_rgba(2,6,23,0.05)]"
         style={{ background: NAV_BG }}
       >
         <div className="mx-auto max-w-7xl px-4">
           <div className="flex h-14 items-center gap-4">
-            {/* Logo wordmark (refined) */}
+            {/* Logo */}
             <Link href="/" aria-label="AAA–RUDRA Aviation" className="mr-auto flex items-center">
               <div className="relative grid grid-cols-[auto_auto] grid-rows-2 items-end leading-none select-none">
-                {/* soft aura */}
                 <span
                   aria-hidden
                   className="pointer-events-none absolute -inset-3 -z-10 rounded-xl blur-xl"
                   style={{ background: "radial-gradient(ellipse, rgba(249,115,22,0.22), rgba(249,115,22,0.06) 42%, transparent 70%)" }}
                 />
-                {/* RUDRA */}
                 <span
                   className="row-span-2 font-extrabold tracking-[0.01em] text-[26px] md:text-[32px] lg:text-[34px]"
                   style={{ color: ACCENT, textShadow: "0 2px 10px rgba(249,115,22,0.25)" }}
                 >
                   RUDRA
                 </span>
-                {/* Drone */}
                 <span className="col-start-2 -mb-0.5 font-semibold text-[15px] md:text-[18px]" style={{ color: ACCENT }}>
                   Drone
                 </span>
-                {/* Aviation */}
                 <span className="col-start-2 mt-0.5 font-medium text-neutral-900 tracking-[0.32em] text-[13px] md:text-[15px]">
                   Aviation
                 </span>
@@ -126,13 +120,10 @@ export default function Header() {
               <ServicesMenu align="right" />
               <TrainingMenu />
               <NavLink href="/store" accent={ACCENT}>Store</NavLink>
-              <NavLink href="/partnership" accent={ACCENT}>Partnership</NavLink>
-              <NavLink href="/events" accent={ACCENT}>Events</NavLink>
               <NavLink href="/blogs" accent={ACCENT}>Blogs</NavLink>
-              <NavLink href="/career" accent={ACCENT}>Career</NavLink>
             </nav>
 
-            {/* Mobile */}
+            {/* Mobile toggle */}
             <button
               className="ml-2 inline-flex items-center justify-center rounded p-2 hover:bg-blue-500/10 md:hidden"
               onClick={() => setOpen((v) => !v)}
@@ -152,10 +143,7 @@ export default function Header() {
                 <MobileItem href="/services" onClick={() => setOpen(false)}>Our Services</MobileItem>
                 <MobileItem href="/training" onClick={() => setOpen(false)}>Training</MobileItem>
                 <MobileItem href="/store" onClick={() => setOpen(false)}>Store</MobileItem>
-                <MobileItem href="/partnership" onClick={() => setOpen(false)}>Partnership</MobileItem>
-                <MobileItem href="/events" onClick={() => setOpen(false)}>Events</MobileItem>
                 <MobileItem href="/blogs" onClick={() => setOpen(false)}>Blogs</MobileItem>
-                <MobileItem href="/career" onClick={() => setOpen(false)}>Career</MobileItem>
               </div>
             </div>
           </div>
@@ -184,6 +172,7 @@ function NavLink({ href, children, accent }: { href: string; children: React.Rea
     </Link>
   );
 }
+
 function MobileItem({ href, onClick, children }: { href: string; onClick: () => void; children: React.ReactNode }) {
   return <Link href={href} onClick={onClick} className="rounded px-2 py-2 hover:bg-neutral-100 active:bg-neutral-200">{children}</Link>;
 }

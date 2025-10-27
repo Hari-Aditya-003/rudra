@@ -12,9 +12,9 @@ const ACCENT_HOVER = "#EA580C";
 
 export default function HeroBanner({
   slides,
-  headerOffset = 64,        // set this to your sticky header height
+  headerOffset = 64,
   interval = 5000,
-  children,                  // overlay content (headline, buttons, etc.)
+  children,
 }: {
   slides: Slide[];
   headerOffset?: number;
@@ -28,7 +28,6 @@ export default function HeroBanner({
   const startX = useRef<number | null>(null);
   const [dragX, setDragX] = useState(0);
 
-  // Only autoplay when hero is on screen
   useEffect(() => {
     if (!rootRef.current) return;
     const obs = new IntersectionObserver(([e]) => (visibleRef.current = e.isIntersecting), { threshold: 0.25 });
@@ -36,7 +35,6 @@ export default function HeroBanner({
     return () => obs.disconnect();
   }, []);
 
-  // Autoplay
   useEffect(() => {
     const t = setInterval(() => {
       if (!hover && visibleRef.current) setI((p) => (p + 1) % slides.length);
@@ -44,7 +42,6 @@ export default function HeroBanner({
     return () => clearInterval(t);
   }, [hover, slides.length, interval]);
 
-  // Swipe
   const onDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
     (e.target as Element).setPointerCapture(e.pointerId);
@@ -61,7 +58,7 @@ export default function HeroBanner({
     if (Math.abs(delta) > 60) setI((p) => (delta < 0 ? (p + 1) % slides.length : (p - 1 + slides.length) % slides.length));
   };
 
-  const H = `calc(100svh - ${headerOffset}px)`; // full-page minus header
+  const H = `calc(100svh - ${headerOffset}px)`;
 
   return (
     <section
@@ -77,7 +74,6 @@ export default function HeroBanner({
       aria-roledescription="carousel"
       aria-label="Hero"
     >
-      {/* Slides track */}
       <div
         className="absolute inset-0 flex transition-transform duration-500 ease-out will-change-transform"
         style={{ transform: `translateX(calc(${dragX}px - ${i * 100}%))` }}
@@ -85,21 +81,17 @@ export default function HeroBanner({
         {slides.map((s, idx) => (
           <div key={idx} className="relative h-full w-full shrink-0">
             <Image src={s.src} alt={s.alt ?? "hero"} fill priority={idx === 0} sizes="100vw" className="object-cover" />
-            {/* Dim + soft blur for text legibility */}
             <div className="absolute inset-0 bg-black/35 backdrop-blur-[1.5px]" />
-            {/* Top+bottom gradient polish */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/40 to-transparent md:h-32" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/35 to-transparent md:h-36" />
           </div>
         ))}
       </div>
 
-      {/* Centered overlay content */}
       <div className="absolute inset-0 z-10 grid place-items-center px-6 text-center">
         <div className="mx-auto max-w-4xl text-white drop-shadow-[0_10px_28px_rgba(0,0,0,0.35)]">{children}</div>
       </div>
 
-      {/* Arrows */}
       <button
         aria-label="Previous"
         onClick={() => setI((p) => (p - 1 + slides.length) % slides.length)}
@@ -117,7 +109,6 @@ export default function HeroBanner({
         <ChevronRight className="h-5 w-5" />
       </button>
 
-      {/* Dots */}
       <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
         {slides.map((_, idx) => (
           <button
@@ -133,7 +124,6 @@ export default function HeroBanner({
   );
 }
 
-/* Floating features strip (overlaps hero bottom) */
 export function HeroFeatureStrip({
   items,
 }: {

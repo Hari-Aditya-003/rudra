@@ -3,106 +3,117 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function SignupForm() {
-  const [firstName, setFirst] = useState("");
-  const [lastName, setLast] = useState("");
-  const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [err, setErr] = useState("");
+  const [form, setForm] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    password: "",
+    confirm: "",
+  });
+  const [error, setError] = useState("");
 
-  async function onSubmit(e: React.FormEvent) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErr("");
+    setError("");
 
-    if (!phone.trim()) return setErr("Phone is required.");
-    if (pass !== confirm) return setErr("Passwords do not match.");
+    const { firstName, lastName, phone, email, password, confirm } = form;
+
+    if (!phone.trim()) return setError("Phone is required.");
+    if (password !== confirm) return setError("Passwords do not match.");
 
     try {
-      // 1) Create account in Firebase Auth
-      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      await createUserWithEmailAndPassword(auth, email, password);
 
-      // 2) Sync to your backend/DB (Prisma User row)
       const name = `${firstName} ${lastName}`.trim();
-      const r = await fetch("/api/signup", {
+      const res = await fetch("/api/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password: pass, phone }),
+        body: JSON.stringify({ name, phone, email, password }),
       });
 
-      if (!r.ok) {
-        const data = await r.json().catch(() => ({}));
-        throw new Error(data?.error ?? "Signup sync failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data?.error ?? "Signup failed");
       }
 
-      // go to account or dashboard
       window.location.href = "/account";
     } catch (e: any) {
-      setErr(`Error: ${e?.code ?? e?.message ?? "signup_failed"}`);
+      setError(`Error: ${e?.code ?? e?.message ?? "signup_failed"}`);
     }
-  }
+  };
 
   return (
-    <div className="space-y-3">
-      {err && <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{err}</div>}
-
-      <form onSubmit={onSubmit} className="space-y-3">
-        <div className="grid grid-cols-2 gap-3">
-          <input
-            placeholder="First name"
-            value={firstName}
-            onChange={(e) => setFirst(e.target.value)}
-            className="rounded border px-3 py-2"
-            required
-          />
-          <input
-            placeholder="Last name"
-            value={lastName}
-            onChange={(e) => setLast(e.target.value)}
-            className="rounded border px-3 py-2"
-            required
-          />
+    <form onSubmit={onSubmit} className="space-y-3">
+      {error && (
+        <div className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {error}
         </div>
+      )}
 
-        <input
-          type="tel"
-          placeholder="Phone"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full rounded border px-3 py-2"
+      <div className="grid grid-cols-2 gap-3">
+        <Input
+          name="firstName"
+          placeholder="First name"
+          value={form.firstName}
+          onChange={handleChange}
           required
         />
-
-        <input
-          type="email"
-          placeholder="E-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded border px-3 py-2"
+        <Input
+          name="lastName"
+          placeholder="Last name"
+          value={form.lastName}
+          onChange={handleChange}
           required
         />
+      </div>
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
-          className="w-full rounded border px-3 py-2"
-          required
-        />
-        <input
-          type="password"
-          placeholder="Confirm password"
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
-          className="w-full rounded border px-3 py-2"
-          required
-        />
+      <Input
+        type="tel"
+        name="phone"
+        placeholder="Phone"
+        value={form.phone}
+        onChange={handleChange}
+        required
+      />
 
-        <button className="w-full rounded bg-slate-900 px-4 py-2 text-white">Create account</button>
-      </form>
-    </div>
+      <Input
+        type="email"
+        name="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={handleChange}
+        required
+      />
+
+      <Input
+        type="password"
+        name="password"
+        placeholder="Password"
+        value={form.password}
+        onChange={handleChange}
+        required
+      />
+      <Input
+        type="password"
+        name="confirm"
+        placeholder="Confirm password"
+        value={form.confirm}
+        onChange={handleChange}
+        required
+      />
+
+      <Button type="submit" className="w-full">
+        Create account
+      </Button>
+    </form>
   );
 }

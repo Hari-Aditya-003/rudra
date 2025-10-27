@@ -48,7 +48,7 @@ export default function HeroSection() {
             )}
           </div>
 
-          {/* CTA Button (only one now) */}
+          {/* CTA Button */}
           <div className="mt-8 flex justify-end">
             <button className="group inline-flex items-center justify-center gap-2 rounded-md px-6 py-3
                                font-semibold text-white shadow-lg

@@ -14,13 +14,12 @@ import {
   Instagram,
 } from "lucide-react";
 
-const NAVY = "#0B1F44";        // primary background
-const NAVY_SOFT = "#132B57";   // panel/controls
-const LINE = "#1E376B";        // dividers
-const ACCENT = "#F97316";      // orange
+const NAVY = "#0B1F44";
+const NAVY_SOFT = "#132B57";
+const LINE = "#1E376B";
+const ACCENT = "#F97316";
 const ACCENT_HOVER = "#EA580C";
 
-/** Header-style wordmark, sized for footer and tuned for dark bg */
 function RudraWordmark({
   accent = ACCENT,
   onDark = true,
@@ -37,7 +36,6 @@ function RudraWordmark({
       className={`relative select-none leading-none ${className}`}
       aria-label="AAA–RUDRA Aviation"
     >
-      {/* soft aura */}
       <span
         aria-hidden
         className="pointer-events-none absolute -inset-3 -z-10 rounded-2xl blur-xl"
@@ -46,9 +44,7 @@ function RudraWordmark({
             "radial-gradient(ellipse at 40% 40%, rgba(249,115,22,0.22), rgba(249,115,22,0.06) 42%, transparent 70%)",
         }}
       />
-      {/* grid layout to position three lines exactly like the header */}
       <div className="grid grid-cols-[auto_auto] grid-rows-2 items-end">
-        {/* RUDRA */}
         <span
           className="row-span-2 font-extrabold tracking-[0.01em]"
           style={{
@@ -60,16 +56,12 @@ function RudraWordmark({
         >
           RUDRA
         </span>
-
-        {/* Drone (top-right, slightly above baseline) */}
         <span
           className="col-start-2 -mb-0.5 font-semibold"
           style={{ color: accent, fontSize: "18px", lineHeight: 1 }}
         >
           Drone
         </span>
-
-        {/* Aviation (bottom-right, spaced letters) */}
         <span
           className="col-start-2 mt-0.5 font-medium"
           style={{
@@ -86,11 +78,9 @@ function RudraWordmark({
   );
 }
 
-/** White rounded box with soft orange glow around the wordmark */
 function LogoCard({ className = "" }) {
   return (
     <div className={`relative inline-block ${className}`}>
-      {/* soft outer aura */}
       <span
         aria-hidden
         className="pointer-events-none absolute -inset-4 -z-10 rounded-3xl blur-xl"
@@ -99,7 +89,6 @@ function LogoCard({ className = "" }) {
             "radial-gradient(ellipse at 50% 50%, rgba(249,115,22,0.18), transparent 60%)",
         }}
       />
-      {/* white card */}
       <div
         className="glow relative inline-block rounded-2xl bg-white/98 px-4 py-3"
         style={{
@@ -110,8 +99,6 @@ function LogoCard({ className = "" }) {
       >
         <RudraWordmark onDark={false} />
       </div>
-
-      {/* gentle breathing glow (remove .glow class if you don't want animation) */}
       <style jsx>{`
         @keyframes softPulse {
           0%, 100% {
@@ -130,7 +117,6 @@ function LogoCard({ className = "" }) {
 export default function Footer() {
   return (
     <footer className="mt-20 text-white">
-      {/* ===== Top navy section (pattern background) ===== */}
       <section
         className="relative isolate"
         style={{
@@ -139,51 +125,42 @@ export default function Footer() {
         }}
       >
         <div className="mx-auto max-w-7xl px-5 py-10 md:py-14">
-          {/* Headline row */}
           <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
             <h3 className="text-3xl font-extrabold tracking-tight md:text-4xl">
               <span className="opacity-90">Let’s </span>
               <span style={{ color: ACCENT }}>Connect </span>
               <span className="opacity-90">there</span>
             </h3>
-
             <Link
               href="/contact"
               className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold shadow-md transition"
               style={{ background: ACCENT }}
               onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLAnchorElement).style.background =
-                  ACCENT_HOVER)
+                ((e.currentTarget as HTMLAnchorElement).style.background = ACCENT_HOVER)
               }
               onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLAnchorElement).style.background =
-                  ACCENT)
+                ((e.currentTarget as HTMLAnchorElement).style.background = ACCENT)
               }
             >
               Contact Us <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
-          {/* divider */}
           <div
             className="my-6 h-px w-full"
             style={{ backgroundColor: LINE, opacity: 0.8 }}
           />
 
-          {/* 4-column content */}
           <div className="grid gap-10 md:grid-cols-12">
-            {/* Brand + blurb + socials */}
             <div className="md:col-span-4">
               <Link href="/" className="inline-block">
                 <LogoCard className="scale-95" />
               </Link>
-
               <p className="mt-3 max-w-md text-sm text-slate-200/85">
                 We deliver DGCA-compliant drone capture and CAD/BIM/GIS-ready
                 deliverables across surveying, inspections, agriculture, and
                 defence.
               </p>
-
               <div className="mt-5 flex items-center gap-2">
                 {[
                   { Icon: Facebook, href: "#" },
@@ -213,7 +190,6 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Navigation */}
             <div className="md:col-span-3">
               <h4 className="text-xl font-semibold">Navigation</h4>
               <ul className="mt-4 space-y-2 text-slate-200/90">
@@ -225,7 +201,6 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Contact */}
             <div className="md:col-span-3">
               <h4 className="text-xl font-semibold">Contact</h4>
               <ul className="mt-4 space-y-3 text-slate-200/90">
@@ -244,12 +219,8 @@ export default function Footer() {
               </ul>
             </div>
 
-            {/* Subscribe */}
             <div className="md:col-span-2">
-              <h4 className="text-xl font-semibold">
-                Get the latest information
-              </h4>
-
+              <h4 className="text-xl font-semibold">Get the latest information</h4>
               <form
                 onSubmit={(e) => e.preventDefault()}
                 className="mt-4 flex overflow-hidden rounded-full"
@@ -274,7 +245,6 @@ export default function Footer() {
         </div>
       </section>
 
-      {/* ===== Bottom orange legal bar ===== */}
       <section style={{ background: ACCENT }}>
         <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-3 px-5 py-4 text-sm md:flex-row md:items-center">
           <p className="text-white/95">
@@ -294,7 +264,6 @@ export default function Footer() {
   );
 }
 
-/* ---------- helpers ---------- */
 function FooterLink({
   href,
   children,

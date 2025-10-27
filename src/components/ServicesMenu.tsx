@@ -84,11 +84,7 @@ const CATEGORIES: Category[] = [
 
 /* ---------------------- Component ----------------------- */
 
-export default function ServicesMenu({
-  align = "right",
-}: {
-  align?: "left" | "right";
-}) {
+export default function ServicesMenu({ align = "right" }: { align?: "left" | "right" }) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [q, setQ] = useState("");
@@ -97,7 +93,6 @@ export default function ServicesMenu({
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const [btnRect, setBtnRect] = useState<DOMRect | null>(null);
 
-  /* filter (search across labels & sublabels) */
   const filtered = useMemo(() => {
     const term = q.trim().toLowerCase();
     if (!term) return CATEGORIES;
@@ -114,13 +109,9 @@ export default function ServicesMenu({
     setOpen(v => !v);
   }
 
-  function toggleCat(id: string) {
-    setExpanded(s => ({ ...s, [id]: !s[id] }));
-  }
-
-  /* Close on outside/Esc, sync position, and trap focus */
   useEffect(() => {
     if (!open) return;
+
     const onDown = (e: MouseEvent) => {
       if (
         panelRef.current &&
@@ -131,10 +122,10 @@ export default function ServicesMenu({
         setOpen(false);
       }
     };
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
       if (e.key === "Tab" && panelRef.current) {
-        // Simple focus trap: keep focus inside the panel
         const focusables = panelRef.current.querySelectorAll<HTMLElement>(
           'a,button,input,textarea,select,[tabindex]:not([tabindex="-1"])'
         );
@@ -151,6 +142,7 @@ export default function ServicesMenu({
         }
       }
     };
+
     const sync = () => btnRef.current && setBtnRect(btnRef.current.getBoundingClientRect());
 
     document.addEventListener("mousedown", onDown);
@@ -158,7 +150,6 @@ export default function ServicesMenu({
     window.addEventListener("resize", sync);
     window.addEventListener("scroll", sync, true);
 
-    // focus first item
     const t = setTimeout(() => firstLinkRef.current?.focus(), 0);
 
     return () => {
@@ -170,7 +161,6 @@ export default function ServicesMenu({
     };
   }, [open]);
 
-  /* panel position */
   const margin = 10;
   const width =
     typeof window !== "undefined" ? Math.min(620, window.innerWidth * 0.96) : 620;
@@ -179,16 +169,12 @@ export default function ServicesMenu({
   if (btnRect && typeof window !== "undefined") {
     left =
       align === "right"
-        ? Math.max(
-            margin,
-            Math.min(btnRect.right - width, window.innerWidth - width - margin)
-          )
+        ? Math.max(margin, Math.min(btnRect.right - width, window.innerWidth - width - margin))
         : Math.max(margin, Math.min(btnRect.left, window.innerWidth - width - margin));
   }
 
   return (
     <>
-      {/* Trigger in header */}
       <button
         ref={btnRef}
         onClick={toggleMenu}
@@ -204,10 +190,8 @@ export default function ServicesMenu({
         typeof document !== "undefined" &&
         createPortal(
           <>
-            {/* Backdrop */}
             <div className="fixed inset-0 z-[1000] bg-black/0" />
 
-            {/* Panel */}
             <div
               ref={panelRef}
               className="fixed z-[1001] w-[min(96vw,620px)] overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-2xl backdrop-blur"
@@ -246,9 +230,7 @@ export default function ServicesMenu({
                     const isOpen = !!expanded[c.id];
                     return (
                       <li key={c.id} className="rounded-lg">
-                        {/* Row */}
                         <div className="flex items-center gap-2">
-                          {/* main category goes to its own page */}
                           <Link
                             href={`/services/${c.id}`}
                             ref={i === 0 ? firstLinkRef : undefined}
@@ -260,21 +242,18 @@ export default function ServicesMenu({
 
                           {hasKids && (
                             <button
-                              onClick={() => setExpanded(s => ({ ...s, [c.id]: !s[c.id] }))}
+                              onClick={() =>
+                                setExpanded(s => ({ ...s, [c.id]: !s[c.id] }))
+                              }
                               className="ml-auto inline-flex items-center rounded-md border border-neutral-200 px-2 py-1 text-neutral-700 hover:bg-neutral-50"
                               aria-expanded={isOpen}
                               aria-label={`Toggle sub-services for ${c.label}`}
                             >
-                              <Plus
-                                className={`h-4 w-4 transition-transform ${
-                                  isOpen ? "rotate-45" : ""
-                                }`}
-                              />
+                              <Plus className={`h-4 w-4 transition-transform ${isOpen ? "rotate-45" : ""}`} />
                             </button>
                           )}
                         </div>
 
-                        {/* Children grid */}
                         {hasKids && isOpen && (
                           <ul className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
                             {c.children!.map(s => (
@@ -295,7 +274,7 @@ export default function ServicesMenu({
                   })}
                 </ul>
 
-                {/* Mobile search under list */}
+                {/* Mobile search */}
                 <div className="mt-4 sm:hidden">
                   <div className="relative">
                     <Search className="pointer-events-none absolute left-2 top-2.5 h-4 w-4 text-neutral-400" />

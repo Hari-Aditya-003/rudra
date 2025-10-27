@@ -3,9 +3,9 @@ import prisma from "@/lib/db";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 
-export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const { email, password } = await req.json();
+    const { email, password }: { email: string; password: string } = await req.json();
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user || !user.passwordHash) {
@@ -25,8 +25,12 @@ export async function POST(req: NextRequest) {
       maxAge: 60 * 60 * 24 * 7,
     });
 
-    return NextResponse.json({ ok: true, user: { id: user.id, role: user.role, name: user.name } });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
+    return NextResponse.json({
+      ok: true,
+      user: { id: user.id, role: user.role, name: user.name },
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -7,7 +7,8 @@ export async function GET() {
     // trivial call to ensure Admin can get an access token
     await getAuth().listUsers(1);
     return NextResponse.json({ ok: true });
-  } catch (e: any) {
-    return NextResponse.json({ ok: false, error: e?.message }, { status: 500 });
+  } catch (e) {
+    const error = e instanceof Error ? e.message : "Unknown error";
+    return NextResponse.json({ ok: false, error }, { status: 500 });
   }
 }

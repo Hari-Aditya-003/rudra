@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import Image from "next/image";
@@ -7,13 +8,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type Slide = { src: string; alt?: string; caption?: string };
 
 const ACCENT = "#F97316";     // orange-500
-const ACCENT_HOVER = "#EA580C";
 
 export default function BannerCarousel({
   slides,
-  interval = 4500,           // 4.5s per slide
+  interval = 4500,
   className = "",
-  height = { base: 260, md: 360, lg: 480 }, // banner heights
+  height = { base: 260, md: 360, lg: 480 },
 }: {
   slides: Slide[];
   interval?: number;
@@ -27,7 +27,6 @@ export default function BannerCarousel({
   const timer = useRef<NodeJS.Timeout | null>(null);
   const root = useRef<HTMLDivElement>(null);
 
-  // Only autoplay when visible on screen
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     if (!root.current) return;
@@ -39,15 +38,13 @@ export default function BannerCarousel({
     return () => obs.disconnect();
   }, []);
 
-  // autoplay (pause on hover / when hidden)
   useEffect(() => {
     if (!visible || hovered) return;
-    timer.current && clearTimeout(timer.current);
+    if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => setI((p) => (p + 1) % slides.length), interval);
     return () => timer.current && clearTimeout(timer.current);
   }, [i, hovered, visible, interval, slides.length]);
 
-  // keyboard
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "ArrowRight") next();
@@ -60,11 +57,11 @@ export default function BannerCarousel({
   function next() {
     setI((p) => (p + 1) % slides.length);
   }
+
   function prev() {
     setI((p) => (p - 1 + slides.length) % slides.length);
   }
 
-  // swipe handlers
   const onPointerDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
     (e.target as Element).setPointerCapture(e.pointerId);
@@ -82,13 +79,12 @@ export default function BannerCarousel({
   };
 
   const h = height;
+
   return (
     <div
       ref={root}
       className={`relative w-full overflow-hidden rounded-2xl ${className}`}
-      style={{
-        height: h.base,
-      }}
+      style={{ height: h.base }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onPointerDown={onPointerDown}
@@ -98,7 +94,6 @@ export default function BannerCarousel({
       aria-roledescription="carousel"
       aria-label="Landing banner"
     >
-      {/* responsive height */}
       <style jsx>{`
         @media (min-width: 768px) {
           div[data-banner-root] { height: ${h.md}px !important; }
@@ -110,7 +105,6 @@ export default function BannerCarousel({
 
       <div data-banner-root className="absolute inset-0" />
 
-      {/* track */}
       <div
         className="absolute inset-0 flex select-none transition-transform duration-500 ease-out will-change-transform"
         style={{ transform: `translateX(calc(${dragX}px - ${i * 100}%))` }}
@@ -125,14 +119,14 @@ export default function BannerCarousel({
               sizes="100vw"
               className="object-cover"
             />
-            {/* gradient + caption */}
             {(s.caption || s.alt) && (
               <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 md:p-6">
-                <div className="inline-flex max-w-[90%] items-center rounded-lg px-3 py-1.5 text-white backdrop-blur"
+                <div
+                  className="inline-flex max-w-[90%] items-center rounded-lg px-3 py-1.5 text-white backdrop-blur"
                   style={{
-                    background:
-                      "linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.25))",
-                  }}>
+                    background: "linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.25))",
+                  }}
+                >
                   <span className="text-sm md:text-base font-semibold">
                     {s.caption ?? s.alt}
                   </span>
@@ -143,7 +137,6 @@ export default function BannerCarousel({
         ))}
       </div>
 
-      {/* arrows */}
       <button
         onClick={prev}
         aria-label="Previous slide"
@@ -161,7 +154,6 @@ export default function BannerCarousel({
         <ChevronRight className="h-5 w-5" />
       </button>
 
-      {/* dots */}
       <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
         {slides.map((_, idx) => {
           const active = idx === i;
